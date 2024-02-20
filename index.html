@@ -29,6 +29,10 @@
     #teams {
         margin-top: 20px;
     }
+    #error {
+        color: red;
+        font-weight: bold;
+    }
 </style>
 </head>
 <body>
@@ -37,6 +41,7 @@
     <input type="text" id="playerInput" placeholder="Enter player names, separated by commas">
     <button onclick="generateTeams()">Generate Teams</button>
     <div id="teams"></div>
+    <div id="error"></div>
 </div>
 
 <script>
@@ -44,6 +49,12 @@ function generateTeams() {
     var playersInput = document.getElementById("playerInput").value;
     var players = playersInput.split(",");
     var shuffledPlayers = shuffleArray(players);
+
+    // Check if the number of players is odd
+    if (shuffledPlayers.length % 2 !== 0) {
+        document.getElementById("error").innerText = "Error: Number of players must be even";
+        return;
+    }
 
     var teams = [];
     for (var i = 0; i < shuffledPlayers.length; i += 2) {
@@ -53,13 +64,6 @@ function generateTeams() {
 
     var matchedTeams = matchTeams(teams);
     
-    // Check if the number of teams is odd
-    if (teams.length % 2 !== 0) {
-        var lastMatch = matchedTeams.pop();
-        var unmatchedTeam = lastMatch[Math.floor(Math.random() * 2)];
-        matchedTeams.push([unmatchedTeam]);
-    }
-
     var teamsHtml = "";
     for (var j = 0; j < matchedTeams.length; j++) {
         if (matchedTeams[j].length === 2) {
@@ -69,6 +73,7 @@ function generateTeams() {
         }
     }
     document.getElementById("teams").innerHTML = teamsHtml;
+    document.getElementById("error").innerText = "";
 }
 
 function shuffleArray(array) {
