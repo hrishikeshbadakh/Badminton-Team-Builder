@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Generator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    #container {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    input[type="text"] {
+        padding: 10px;
+        margin-bottom: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+    #teams {
+        margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+<div id="container">
+    <h2>Team Generator</h2>
+    <input type="text" id="playerInput" placeholder="Enter player names, separated by commas">
+    <button onclick="generateTeams()">Generate Teams</button>
+    <div id="teams"></div>
+</div>
+
+<script>
+function generateTeams() {
+    var playersInput = document.getElementById("playerInput").value;
+    var players = playersInput.split(",");
+    var shuffledPlayers = shuffleArray(players);
+
+    var teams = [];
+    for (var i = 0; i < shuffledPlayers.length; i += 2) {
+        var team = [shuffledPlayers[i], shuffledPlayers[i + 1]];
+        teams.push(team);
+    }
+
+    var matchedTeams = matchTeams(teams);
+    
+    // Check if the number of teams is odd
+    if (teams.length % 2 !== 0) {
+        var lastMatch = matchedTeams.pop();
+        var unmatchedTeam = lastMatch[Math.floor(Math.random() * 2)];
+        matchedTeams.push([unmatchedTeam]);
+    }
+
+    var teamsHtml = "";
+    for (var j = 0; j < matchedTeams.length; j++) {
+        if (matchedTeams[j].length === 2) {
+            teamsHtml += "<p>Match " + (j + 1) + ": " + matchedTeams[j][0].join(", ") + " VS " + matchedTeams[j][1].join(", ") + "</p>";
+        } else {
+            teamsHtml += "<p>Final Match: " + matchedTeams[j][0].join(", ") + " VS " + "Winner of Previous Match" + "</p>";
+        }
+    }
+    document.getElementById("teams").innerHTML = teamsHtml;
+}
+
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
+function matchTeams(teams) {
+    var matchedTeams = [];
+    var shuffledTeams = shuffleArray(teams);
+    for (var i = 0; i < shuffledTeams.length; i += 2) {
+        matchedTeams.push([shuffledTeams[i], shuffledTeams[i + 1]]);
+    }
+    return matchedTeams;
+}
+</script>
+</body>
+</html>
